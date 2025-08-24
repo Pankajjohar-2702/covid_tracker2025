@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Tracker - Hospital Management System</title>
+    
+    <!-- External CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="showPage('login')">
+                <i class="fas fa-virus me-2"></i>COVID-19 Tracker
+            </a>
+            <div class="navbar-nav ms-auto" id="navLinks" style="display: none;">
+                <a class="nav-link" href="#" onclick="showPage('dashboard')">
+                    <i class="fas fa-chart-line me-1"></i>Dashboard
+                </a>
+                <a class="nav-link" href="#" onclick="showPage('certificate')">
+                    <i class="fas fa-certificate me-1"></i>Certificate
+                </a>
+                <a class="nav-link" href="#" onclick="logout()">
+                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page">
+        <div class="container">
+            <div class="main-container login-container">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
+                    <h2 class="mb-3">Hospital Staff Login</h2>
+                    <p class="text-muted">Access the COVID-19 tracking system</p>
+                </div>
+                
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="username" placeholder="Username" required>
+                        <label for="username">Username</label>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="password" placeholder="Password" required>
+                        <label for="password">Password</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <span class="loading spinner-border spinner-border-sm me-2" role="status"></span>
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </button>
+                </form>
+                
+                <div class="text-center">
+                    <a href="#" class="text-decoration-none me-3" onclick="showAlert('Password reset functionality would be implemented with backend integration.', 'info')">
+                        <i class="fas fa-key me-1"></i>Reset Password
+                    </a>
+                    <a href="#" class="text-decoration-none" onclick="showAlert('Contact support at: support@covidtracker.com', 'info')">
+                        <i class="fas fa-envelope me-1"></i>Contact Support
+                    </a>
+                </div>
+                
+                <div class="mt-4 p-3 bg-light rounded">
+                    <small class="text-muted">
+                        <strong>Demo Credentials:</strong><br>
+                        Username: admin<br>
+                        Password: admin123
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="page hidden">
+        <div class="page-header">
+            <div class="container">
+                <h1><i class="fas fa-chart-line me-2"></i>COVID-19 Dashboard</h1>
+                <p class="mb-0">Monitor and manage COVID-19 patient data</p>
+            </div>
+        </div>
+        
+        <div class="container dashboard-container">
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="stats-card text-center">
+                        <div class="stats-number text-primary" id="totalCases">0</div>
+                        <div class="stats-label">Total Cases</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card text-center">
+                        <div class="stats-number text-success" id="survivedCases">0</div>
+                        <div class="stats-label">Survived</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card text-center">
+                        <div class="stats-number text-danger" id="deceasedCases">0</div>
+                        <div class="stats-label">Deceased</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card text-center">
+                        <div class="stats-number text-warning" id="survivalRate">0%</div>
+                        <div class="stats-label">Survival Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Entry Form -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="main-container">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Add Patient Data</h5>
+                        </div>
+                        <div class="p-3">
+                            <form id="patientForm" onsubmit="addPatient(event)">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="patientName" placeholder="Patient Name" required>
+                                    <label for="patientName">Patient Name</label>
+                                </div>
+                                
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" id="patientCountry" required>
+                                        <option value="">Select Country</option>
+                                        <option value="United States">🇺🇸 United States</option>
+                                        <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                                        <option value="Germany">🇩🇪 Germany</option>
+                                        <option value="France">🇫🇷 France</option>
+                                        <option value="Italy">🇮🇹 Italy</option>
+                                        <option value="Spain">🇪🇸 Spain</option>
+                                        <option value="Canada">🇨🇦 Canada</option>
+                                        <option value="Australia">🇦🇺 Australia</option>
+                                        <option value="Japan">🇯🇵 Japan</option>
+                                        <option value="South Korea">🇰🇷 South Korea</option>
+                                        <option value="India">🇮🇳 India</option>
+                                        <option value="Brazil">🇧🇷 Brazil</option>
+                                    </select>
+                                    <label for="patientCountry">Country</label>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Patient Status</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="patientStatus" id="survived" value="survived" required>
+                                            <label class="form-check-label text-success" for="survived">
+                                                <i class="fas fa-heart me-1"></i>Survived
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="patientStatus" id="deceased" value="deceased" required>
+                                            <label class="form-check-label text-danger" for="deceased">
+                                                <i class="fas fa-cross me-1"></i>Deceased
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <span class="loading spinner-border spinner-border-sm me-2" role="status"></span>
+                                    <i class="fas fa-save me-2"></i>Add Patient
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="col-md-6">
+                    <div class="main-container">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-globe me-2"></i>Global Overview</h5>
+                        </div>
+                        <div class="p-3">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Survival Rate</span>
+                                    <span id="globalSurvivalRate">85%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Recovery Trend</span>
+                                    <span class="text-success">↗ Improving</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: 72%"></div>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="fas fa-table me-2"></i>Patient Records</h5>
+                    <button class="btn btn-outline-primary btn-sm" onclick="exportData()">
+                        <i class="fas fa-download me-1"></i>Export Data
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Patient Name</th>
+                                <th>Country</th>
+                                <th>Status</th>
+                                <th>Date Added</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientTableBody">
+                            <!-- Sample data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Page -->
+    <div id="certificatePage" class="page hidden">
+        <div class="page-header">
+            <div class="container">
+                <h1><i class="fas fa-certificate me-2"></i>Vaccination Certificate</h1>
+                <p class="mb-0">Download your official vaccination certificate</p>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="main-container certificate-container">
+                <form id="certificateForm" onsubmit="generateCertificate(event)">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="certName" placeholder="Full Name" required>
+                                <label for="certName">Full Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" id="certDob" required>
+                                <label for="certDob">Date of Birth</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="certId" placeholder="ID Number" required>
+                                <label for="certId">ID Number</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <select class="form-select" id="certVaccine" required>
+                                    <option value="">Select Vaccine</option>
+                                    <option value="Pfizer-BioNTech">Pfizer-BioNTech</option>
+                                    <option value="Moderna">Moderna</option>
+                                    <option value="Johnson & Johnson">Johnson & Johnson</option>
+                                    <option value="AstraZeneca">AstraZeneca</option>
+                                </select>
+                                <label for="certVaccine">Vaccine Type</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" id="certDate1" required>
+                                <label for="certDate1">First Dose Date</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" id="certDate2">
+                                <label for="certDate2">Second Dose Date (if applicable)</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <span class="loading spinner-border spinner-border-sm me-2" role="status"></span>
+                        <i class="fas fa-file-pdf me-2"></i>Generate Certificate
+                    </button>
+                </form>
+                
+                <div id="certificatePreview" class="certificate-preview hidden">
+                    <h4 class="text-primary mb-3">
+                        <i class="fas fa-shield-alt me-2"></i>COVID-19 Vaccination Certificate
+                    </h4>
+                    <div id="certificateContent"></div>
+                    <button class="btn btn-success mt-3" onclick="downloadCertificate()">
+                        <i class="fas fa-download me-2"></i>Download PDF
+                    </button>
+                </div>
+                
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Demo Mode:</strong> This is a demonstration. In a real system, certificates would be verified against official vaccination records and digitally signed.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalTitle">
+                        <i class="fas fa-info-circle me-2"></i>Information
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="alertModalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="index.js"></script>
+</body>
+</html>
